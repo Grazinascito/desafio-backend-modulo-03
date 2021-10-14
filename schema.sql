@@ -17,5 +17,6 @@ CREATE TABLE IF NOT EXISTS produtos(
   	categoria TEXT NOT NULL,
   	preco INTEGER NOT NULL,
   	descricao TEXT,
-  	imagem TEXT
+  	imagem TEXT,
+	FOREIGN KEY(usuario_id) REFERENCES usuarios(id)
 );
