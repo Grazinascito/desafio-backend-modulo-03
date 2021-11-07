@@ -1,4 +1,6 @@
 const conexao = require("../conexao");
+const schemaCadastroProduto = require("../validacoes/schemaCadastroProduto");
+const schemaAtualizarProduto = require("../validacoes/schemaAtualizarProduto");
 
 const listarProdutos = async (req, res) => {
   const { usuario } = req;
@@ -39,31 +41,12 @@ const obterProduto = async (req, res) => {
 };
 
 const cadastrarProduto = async (req, res) => {
-  const { nome, quantidade, categoria, preco, descricao, imagem } = req.body;
+  const { categoria, imagem } = req.body;
   const { usuario } = req;
 
-  if (!nome) {
-    return res
-      .status(400)
-      .json({ mensagem: "O nome do produto deve ser informado" });
-  }
-  if (!quantidade) {
-    return res
-      .status(400)
-      .json({ mensagem: "O nome da quantidade deve ser informado" });
-  }
-  if (!descricao) {
-    return res
-      .status(400)
-      .json({ mensagem: "O nome da descrição deve ser informado" });
-  }
-  if (!preco) {
-    return res
-      .status(400)
-      .json({ mensagem: "O nome do preco deve ser informado" });
-  }
-
   try {
+
+    await schemaCadastroProduto.validate(req.body);
     const queryCadastro =
       "insert into produtos(nome, usuario_id, quantidade,categoria,preco,descricao,imagem) values ($1, $2, $3, $4, $5, $6, $7)";
 
@@ -91,31 +74,14 @@ const cadastrarProduto = async (req, res) => {
 
 const atualizarProduto = async (req, res) => {
   const { id } = req.params;
-  const { nome, quantidade, categoria, preco, descricao, imagem } = req.body;
+  const { categoria, imagem } = req.body;
   const { usuario } = req;
 
-  if (!nome) {
-    return res
-      .status(400)
-      .json({ mensagem: "O nome do produto deve ser informado" });
-  }
-  if (!quantidade) {
-    return res
-      .status(400)
-      .json({ mensagem: "O nome da quantidade deve ser informado" });
-  }
-  if (!descricao) {
-    return res
-      .status(400)
-      .json({ mensagem: "O nome da descrição deve ser informado" });
-  }
-  if (!preco) {
-    return res
-      .status(400)
-      .json({ mensagem: "O nome do preco deve ser informado" });
-  }
+  
 
   try {
+
+    await schemaAtualizarProduto.validate(req.body);
     const verificaDados = await conexao.query(
       "select * from produtos where id = $1 and usuario_id = $2",
       [id, usuario.id]
